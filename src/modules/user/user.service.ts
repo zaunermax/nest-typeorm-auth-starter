@@ -1,6 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../../repositories/UserRepository';
+import { UserDto } from '../../types/dto/UserDto';
 import { AuthService } from '../auth/auth.service';
 import { NewUser } from '../../types/dto/NewUser';
 import { User } from '../../types/entities/User.entity';
@@ -15,8 +16,10 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
-  async findAllUsers(): Promise<User[]> {
-    return this.userRepo.find();
+  async findAllUsers(): Promise<UserDto[]> {
+    return this.userRepo
+      .find()
+      .then(users => users.map(({ pwHash, ...rest }) => ({ ...rest })));
   }
 
   async findOneOrFail(userId: number): Promise<User> {

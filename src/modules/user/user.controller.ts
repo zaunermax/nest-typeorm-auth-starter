@@ -12,6 +12,7 @@ import { SetRoles } from '../../decorators/roles.decorator';
 import { RoleGuard } from '../../guards/RoleGuard';
 import { NewUser } from '../../types/dto/NewUser';
 import { RemoveUser } from '../../types/dto/RemoveUser';
+import { UserDto } from '../../types/dto/UserDto';
 import { User } from '../../types/entities/User.entity';
 import { Role } from '../../types/shared/Role';
 import { UserService } from './user.service';
@@ -21,11 +22,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getUsers(): Promise<User[]> {
+  @UseGuards(AuthGuard('jwt'))
+  getUsers(): Promise<UserDto[]> {
     return this.userService.findAllUsers();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   getUserById(@Param('id') id: number): Promise<User> {
     return this.userService.findOneOrFail(id);
   }
