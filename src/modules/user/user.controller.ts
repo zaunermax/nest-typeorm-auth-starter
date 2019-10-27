@@ -18,30 +18,30 @@ import { Role } from '../../types/shared/Role';
 import { UserService } from './user.service';
 
 @Controller('user')
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @SetRoles(Role.admin)
   getUsers(): Promise<UserDto[]> {
     return this.userService.findAllUsers();
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @SetRoles(Role.admin)
   getUserById(@Param('id') id: number): Promise<User> {
     return this.userService.findOneOrFail(id);
   }
 
   @Post()
   @SetRoles(Role.admin)
-  @UseGuards(AuthGuard('jwt'), RoleGuard)
   addUser(@Body() body: NewUser): Promise<User> {
     return this.userService.addUser(body);
   }
 
   @Delete()
-  @UseGuards(AuthGuard('jwt'))
+  @SetRoles(Role.admin)
   removeUser(@Body() body: RemoveUser) {
     return this.userService.removeUser(body.id);
   }

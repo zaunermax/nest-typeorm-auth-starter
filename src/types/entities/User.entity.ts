@@ -20,6 +20,6 @@ export class User {
   @Column()
   pwHash!: string;
 
-  @Column('enum', { enum: Role, default: Role.player })
+  @Column('enum', { enum: Role, default: Role.user })
   role!: Role;
 }
