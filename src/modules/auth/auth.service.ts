@@ -1,12 +1,12 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from 'nestjs-config';
 import * as bcrypt from 'bcryptjs';
 import { UserRepository } from '../../repositories/UserRepository';
 import { User } from '../../types/entities/User.entity';
 import { Nullable } from '../../types/helpers';
 import { JwtToken } from '../../types/shared/JwtToken';
+import { ConfigService } from '../config/config.service';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {
-    this.jwtSecret = configService.get('auth.secret');
+    this.jwtSecret = configService.Secret;
   }
 
   async validateUser(username: string, pass: string): Promise<Nullable<User>> {
