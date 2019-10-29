@@ -41,8 +41,15 @@ export class ConfigService {
   }
 
   private getConnectionOptions(): ConnectionOptions {
+    const type = this.get('TYPEORM_CONNECTION');
+
+    if (type !== 'postgres')
+      throw new Error(
+        `You must set the TYPEORM_CONNECTION variable to 'postgres' to make the typeorm CLI work.`,
+      );
+
     return {
-      type: 'postgres',
+      type,
       host: this.get('TYPEORM_HOST'),
       username: this.get('TYPEORM_USERNAME'),
       password: this.get('TYPEORM_PASSWORD'),
