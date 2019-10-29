@@ -16,7 +16,7 @@ export class ConfigService {
 
   constructor() {
     this.env = ConfigService.getEnvironment();
-    this.envConfig = dotenv.parse(fs.readFileSync(`${this.env}.env`));
+    this.envConfig = dotenv.parse(fs.readFileSync(`.env`));
     this.database = this.getConnectionOptions();
     this.secret = this.get('SECRET');
     this.port = this.getPort();
@@ -32,7 +32,7 @@ export class ConfigService {
 
   private get(key: string): string {
     const value = this.envConfig[key];
-    if (!value) throw new Error(`${key} is not set in ${this.env}.env`);
+    if (!value) throw new Error(`${key} is not set in .env`);
     return value;
   }
 
@@ -41,8 +41,15 @@ export class ConfigService {
   }
 
   private getConnectionOptions(): ConnectionOptions {
+    const type = this.get('TYPEORM_CONNECTION');
+
+    if (type !== 'postgres')
+      throw new Error(
+        `You must set the TYPEORM_CONNECTION variable to 'postgres' to make the typeorm CLI work.`,
+      );
+
     return {
-      type: 'postgres',
+      type,
       host: this.get('TYPEORM_HOST'),
       username: this.get('TYPEORM_USERNAME'),
       password: this.get('TYPEORM_PASSWORD'),
